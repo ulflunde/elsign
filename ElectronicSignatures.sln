@@ -5,6 +5,11 @@ VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "elsign", "elsign\elsign.csproj", "{D513C73E-CDFB-426D-83E9-DB06BED5B3E2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{AE662563-DBA9-4602-9A56-A1E23AACDD7C}"
+	ProjectSection(SolutionItems) = preProject
+		lib\Signicat.Basic.dll = lib\Signicat.Basic.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
