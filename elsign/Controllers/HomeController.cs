@@ -15,7 +15,7 @@ namespace elsign.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = "Electronic Signatures with Signicat";
 
             return View();
         }
