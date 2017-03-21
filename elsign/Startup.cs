@@ -54,6 +54,10 @@ namespace elsign
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "template",
+                    template: "{controller=Home}/{action=LearnAspNet}");
             });
         }
     }

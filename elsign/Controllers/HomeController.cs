@@ -27,6 +27,27 @@ namespace elsign.Controllers
             return View();
         }
 
+        public IActionResult LearnAspNet()
+        {
+            ViewData["Message"] = "Template Home Page.";
+
+            return View();
+        }
+
+        public IActionResult UserLogin()
+        {
+            ViewData["Message"] = "Login service";
+
+            return View();
+        }
+
+        public IActionResult Signature()
+        {
+            ViewData["Message"] = "Secure signature";
+
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View();
