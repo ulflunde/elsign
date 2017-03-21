@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Diagnostics;
 
-namespace Signicat.Basic.Example.Controllers
+namespace basicexample.Controllers
 {
     public class AuthController : Controller
     {
@@ -27,7 +27,7 @@ namespace Signicat.Basic.Example.Controllers
             {
                 string recipient = Url.Action("Verify", "Auth", null, Request.Url.Scheme);
                 IEnumerable<Signicat.Basic.Attribute> authAttributes;
-                authAttributes = Signicat.Basic.Saml.Verify(SAMLResponse, Infrastructure.Test, 10, recipient);
+                authAttributes = Signicat.Basic.Saml.Verify(SAMLResponse, Signicat.Basic.Infrastructure.Test, 10, recipient);
 
                 // The attributes will vary between different id methods.
                 // This is an example for Norwegian BankID.
@@ -37,7 +37,7 @@ namespace Signicat.Basic.Example.Controllers
                 FormsAuthentication.SetAuthCookie(nationalId, false);
                 return RedirectToAction("Granted", new { name = plainName });
             }
-            catch (SignicatException x)
+            catch (Signicat.Basic.SignicatException x)
             {
                 // Could not verify SAML response
                 Log(x);

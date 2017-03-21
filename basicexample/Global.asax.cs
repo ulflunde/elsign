@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Diagnostics;
 
-namespace Signicat.Basic.Example
+
+namespace basicexample
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
@@ -28,6 +29,7 @@ namespace Signicat.Basic.Example
                 new { controller = "Auth", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
 
+            return;
         }
 
         protected void Application_Start()
@@ -40,6 +42,8 @@ namespace Signicat.Basic.Example
             string logFilePath = Server.MapPath(".") + "\\log.txt";
             Trace.Listeners.Add(new TextWriterTraceListener(logFilePath));
             Trace.AutoFlush = true;
+
+            return;
         }
     }
 }
