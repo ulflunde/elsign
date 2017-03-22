@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+// using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace elsign.Controllers
@@ -49,7 +49,7 @@ namespace elsign.Controllers
         }
 
         // Home/SDS
-        public async Task<IActionResult> SDS(int? id)
+        public IActionResult SDS(int? id)
         {
             ViewData["Message"] = "SDS is a service which eliminates large data transfers from your web service requests.";
             ViewData["Mode"] = "menu";
@@ -62,7 +62,8 @@ namespace elsign.Controllers
                         case 1:
                             ViewData["Message"] = "Upload a file ";
                             ViewData["Mode"] = "upload";
-                            ViewData["Filename"] = Request.Query["documentName"];
+                            // ViewData["Filename"] = Request.Query["documentName"];  // if method="GET"
+                            ViewData["Filename"] = Request.Form["documentName"];  // if method="POST"
                             break;
                         case 2:
                             ViewData["Message"] = "Downloading file ";
