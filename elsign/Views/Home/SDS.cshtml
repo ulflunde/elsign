@@ -6,3 +6,15 @@
 }
 <h2>@ViewData["Title"].</h2>
 <h3>@ViewData["Message"]</h3>
+
+<form id="uploadform" action="/SDS/1">
+    Upload a document to the SDS server
+    <input id="documentName" type="file" onchange="sbut.disabled = false; checkDocumentName(documentName.value);"><br />
+    <button #sbut id="sbut" disabled (click)="this.add(); documentName.value=''; sbut.disabled = true; ">Submit</button>
+</form>
+
+<script>
+    function checkDocumentName(url) {
+        // todo: check what we are uploading
+    }
+</script>
