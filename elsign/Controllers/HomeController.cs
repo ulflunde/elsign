@@ -48,6 +48,13 @@ namespace elsign.Controllers
             return View();
         }
 
+        public IActionResult SDS()
+        {
+            ViewData["Message"] = "SDS is a service that helps you avoid transferring large amounts of data in your web service requests.";
+
+            return View();
+        }
+
         public IActionResult Error()
         {
             return View();

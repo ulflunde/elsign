@@ -58,6 +58,10 @@ namespace elsign
                 routes.MapRoute(
                     name: "template",
                     template: "{controller=Home}/{action=LearnAspNet}");
+
+                routes.MapRoute(
+                    name: "session data storage service",
+                    template: "{controller=Home}/{action=SDS}/{id?}");
             });
         }
     }
