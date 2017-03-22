@@ -48,9 +48,35 @@ namespace elsign.Controllers
             return View();
         }
 
-        public IActionResult SDS()
+        // Home/SDS
+        public async Task<IActionResult> SDS(int? id)
         {
-            ViewData["Message"] = "SDS is a service that helps you avoid transferring large amounts of data in your web service requests.";
+            ViewData["Message"] = "SDS is a service which eliminates large data transfers from your web service requests.";
+            ViewData["Mode"] = "menu";
+            try
+            {
+                if ((id != null) && (id > 0))
+                {
+                    switch(id)
+                    {
+                        case 1:
+                            ViewData["Message"] = "Upload a file ";
+                            ViewData["Mode"] = "upload";
+                            ViewData["Filename"] = Request.Query["documentName"];
+                            break;
+                        case 2:
+                            ViewData["Message"] = "Downloading file ";
+                            ViewData["Mode"] = "download";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
 
             return View();
         }

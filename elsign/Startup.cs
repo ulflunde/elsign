@@ -61,7 +61,7 @@ namespace elsign
 
                 routes.MapRoute(
                     name: "session data storage service",
-                    template: "{controller=Home}/{action=SDS}/{id?}");
+                    template: "{controller=Home}/{action=SDS}/{id:int?}");
             });
         }
     }

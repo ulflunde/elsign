@@ -1,0 +1,12 @@
+﻿<form id="uploadform" action="/Home/SDS/1">
+    Upload a document to the SDS server.
+    <input id="documentName" name="documentName" type="file" onchange="sbut1.disabled = false; checkDocumentName(documentName.value);"><br />
+    <button id="sbut1" disabled>Submit</button>
+</form>
+
+<form id="downloadform" action="/Home/SDS/2">
+    Download a document from the SDS server.<br />
+    <button id="sbut2" enabled>Choose file</button>
+</form>
+
+

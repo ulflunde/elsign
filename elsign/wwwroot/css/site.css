@@ -35,3 +35,20 @@ textarea {
         display: none;
     }
 }
+
+#uploadform {
+    padding-top: 1cm;
+    padding-bottom: 1cm;
+}
+
+#downloadform {
+    padding-bottom: 1cm;
+}
+
+#documentName {
+        padding-top: 2mm;
+}
+
+
+
+
