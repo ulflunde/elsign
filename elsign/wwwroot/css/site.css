@@ -45,8 +45,11 @@ textarea {
     padding-bottom: 1cm;
 }
 
+/* the file name browser textbox */
 #documentName {
-        padding-top: 2mm;
+    padding-top: 2mm;
+    width: 80%;
+    background-color: lightgreen;
 }
 
 

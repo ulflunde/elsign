@@ -1,19 +1,15 @@
-﻿<script>
+﻿<script type="text/javascript">
     function checkDocumentName(url) {
         // alert("Full filename: \"" + url + "\"");
     }
 </script>
 
-<form id="uploadform" method="post" action="https://preprod.signicat.com/doc/demo/sds">
-    Upload a document to the SDS server.
-    <input id="documentName" name="documentName" type="file" onchange="sbut1.disabled = false; checkDocumentName(documentName.value);"><br />
-    <input name="UserName" value="demo" type="hidden" />
-    <input name="Username" value="demo" type="hidden" />
-    <input name="username" value="demo" type="hidden" />
-    <input name="Password" value="Bond007" type="hidden" />
-    <input name="password" value="Bond007" type="hidden" />
-    <button id="sbut1" disabled runat="server">Submit</button>
-</form>
+<!-- <form id="uploadform" method="post" action="https://preprod.signicat.com/doc/demo/sds"> -->
+<form id="uploadform" method="post" action="/Home/SDS/1">
+        Upload a document to the SDS server.
+        <input id="documentName" name="documentName" type="file" onchange="sbut1.disabled=false; checkDocumentName(documentName.value);"><br />
+        <button id="sbut1" disabled runat="server" OnClick='$.get("/Home/UploadDocumentToSignicat", null, function (data) {sbut1.disabled = true;});'>Submit</button>
+    </form>
 
 <form id="downloadform" method="post" action="/Home/SDS/2">
     Download a document from the SDS server.<br />

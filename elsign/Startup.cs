@@ -28,6 +28,7 @@ namespace elsign
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddMemoryCache();
             services.AddMvc();
         }
 
@@ -62,6 +63,10 @@ namespace elsign
                 routes.MapRoute(
                     name: "session data storage service",
                     template: "{controller=Home}/{action=SDS}/{id:int?}");
+
+                routes.MapRoute(
+                    name: "UploadDocumentToSignicat",
+                    template: "{controller=Home}/{action=UploadDocumentToSignicat}");
             });
         }
     }

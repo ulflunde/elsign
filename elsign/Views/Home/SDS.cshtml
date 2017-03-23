@@ -15,11 +15,13 @@
     }
     else if (ViewData["Mode"].Equals("upload"))
     {
-        @:<p>Uploading file "@ViewData["Filename"]".</p>
+        @:<p>Uploaded file "@ViewData["Filename"]".</p>
+        @:<p>The new document ID is: @ViewData["DocumentID"]</p>
     }
-    else if (ViewData["Mode"].Equals("download"))
-    {
-        @:<p>Unfinished</p>
+else if (ViewData["Mode"].Equals("download"))
+{
+    @:
+<p>Unfinished</p>
     }
 </div>
 
