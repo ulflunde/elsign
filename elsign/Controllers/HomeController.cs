@@ -2,13 +2,11 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Net.Http;
-//using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace elsign.Controllers
 {
@@ -16,36 +14,89 @@ namespace elsign.Controllers
     {
         public IUrlHelper h;
 
-        private IMemoryCache _cache;
-        private IHostingEnvironment _environment;
+        protected readonly IMemoryCache _cache;
+        protected readonly IHostingEnvironment _environment;
 
+        /*
+        /// <summary>
+        /// You will get a run-time error if you have multimple constructors for the Controller class:
+        /// 
+        /// InvalidOperationException: 
+        /// Multiple constructors accepting all given argument types have been found in type 'elsign.Controllers.HomeController'.
+        /// There should only be one applicable constructor.
+        /// 
+        /// </summary>
         public HomeController(IMemoryCache cache)
         {
-            _cache = cache;
-        }
-        public HomeController(IHostingEnvironment environment)
-        {
-            _environment = environment;
+            this._cache = cache;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SDS(ICollection<IFormFile> documentName)
+        public HomeController(IHostingEnvironment environment)
         {
-            // first upload the file to our web server
-            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-            foreach (var file in documentName)
+            this._environment = environment;
+        }
+        */
+
+        public HomeController(IMemoryCache cache, IHostingEnvironment environment)
+        {
+            this._cache = cache;
+            this._environment = environment;
+        }
+
+        // Home/SDS with arguments
+        [HttpPost]
+        public async Task<IActionResult> SDS(ICollection<IFormFile> documentList, int? id)
+        {
+            // default action shall be to present the SDS menu
+            ViewData["Message"] = "SDS is a service which eliminates large data transfers from your web service requests.";
+            ViewData["Mode"] = "menu";
+
+            try
             {
-                if (file.Length > 0)
+                if ((id != null) && (id > 0))
                 {
-                    using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
+                    switch (id)
                     {
-                        await file.CopyToAsync(fileStream);
+                        case 1:  // a file has been selected for upload
+                            ViewData["Message"] = "Upload a file ";
+                            ViewData["Mode"] = "upload";
+
+                            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                            foreach (var file in documentList)
+                            {
+                                if (file.Length > 0)
+                                {
+                                    // upload the file to our web server
+                                    using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
+                                    {
+                                        await file.CopyToAsync(fileStream);
+                                    }
+                                    ViewData["Filename"] = file.FileName;
+                                }
+                            }
+
+                            // fetch the file name submitted by the form
+                            // ViewData["Filename"] = Request.Query["documentName"];  // if method="GET"
+                            ViewData["Filename"] = Request.Form["documentName"];  // if method="POST"
+                            ViewData["DocumentID"] = DocumentMetadata.GetLastDocumentID(_cache);
+                            break;
+                        case 2:  // present files which may be available for download
+                            ViewData["Message"] = "Downloading file ";
+                            ViewData["Mode"] = "download";
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+
             return View();
-        }
-        
+        }  // Action SDS with parameters
+
         /// <summary>
         /// Upload the document from the web server to Signicat's document server.
         /// </summary>
@@ -125,41 +176,12 @@ namespace elsign.Controllers
             return View();
         }
 
-        // Home/SDS
-        public IActionResult SDS(int? id)
+        // Home/SDS without arguments
+        public IActionResult SDS()
         {
             // default action shall be to present the SDS menu
             ViewData["Message"] = "SDS is a service which eliminates large data transfers from your web service requests.";
             ViewData["Mode"] = "menu";
-
-            try
-            {
-                if ((id != null) && (id > 0))
-                {
-                    switch(id)
-                    {
-                        case 1:  // a file has been selected for upload
-                            ViewData["Message"] = "Upload a file ";
-                            ViewData["Mode"] = "upload";
-
-                            // fetch the file name submitted by the form
-                            /* ViewData["Filename"] = Request.Query["documentName"];  // if method="GET" */
-                            ViewData["Filename"] = Request.Form["documentName"];  // if method="POST"
-                            ViewData["DocumentID"] = DocumentMetadata.GetLastDocumentID(_cache);
-                            break;
-                        case 2:  // present files which may be available for download
-                            ViewData["Message"] = "Downloading file ";
-                            ViewData["Mode"] = "download";
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.ToString();
-            }
 
             return View();
         }

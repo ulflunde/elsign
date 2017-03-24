@@ -1,29 +1,29 @@
 ﻿<script type="text/javascript">
     var selectedDoc;
     function checkDocumentName(e, url) {
-        // alert("Full filename: \"" + url + "\"");
         var files = e.target.files;   // The file(s) selected by the user (as a FileList object).
         var file = files[0];
         var lastmodifieddate = file.lastModifiedDate;
         var relativepath = file.webkitRelativePath;  // this has no value when selecting files, only when selecting folders (i.e., when the input element has a "webkitdirectory" attribute)
 
         // alert(relativepath);  // relative path, always empty
-        selectedDoc = file.name;
-        alert("The filename is\n" + selectedDoc);  // document name
-        alert("File last modified on\n" + lastmodifieddate);  // timestamp on the form "Fri Mar 03 2017 14:02:24 GMT+0100 (W. Europe Standard Time)"
-        alert(url);  // fakepath path + document name
-        alert("File size: " + file.size);
-        selectedDoc = "wwwroot/data/dummy-document.pdf";
+        // alert(url);  // fakepath path + document name
+        // alert("The filename is\n" + file.name);  // document name
+        // alert("File last modified on\n" + lastmodifieddate);  // timestamp on the form "Fri Mar 03 2017 14:02:24 GMT+0100 (W. Europe Standard Time)"
+        // alert("File size: " + file.size);
+        selectedDoc = "wwwroot/data/" + file.name;  // store the (client file system) filename in a global variable
     }
 </script>
 
-<!-- <form id="uploadform" method="post" action="https://preprod.signicat.com/doc/demo/sds"> -->  <!-- this will work, but will pass the control to Signicat's web site -->
-<!-- <form id="uploadform" method="post" action="/Home/SDS/1"> -->
-    <form id="uploadform" method="post" asp-action="SDS" asp-controller="Home" enctype="multipart/form-data">
+<!-- using a tip from https://www.mikesdotnetting.com/article/288/uploading-files-with-asp-net-core-1-0-mvc -->
+    <form id="uploadform" method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="SDS" asp-route-id="1">
+        <!-- <form id="uploadform" method="post" action="https://preprod.signicat.com/doc/demo/sds"> -->  <!-- this will also work, but will pass the control to Signicat's web site -->
+        <!-- <form id="uploadform" method="post" action="/Home/SDS/1"> -->  <!-- this will not work when server and client are on different file systems -->
+
         Upload a document to the SDS server.
 
         <!-- Locate the file containing the document on the client's file system (where the web browser is running). -->
-        <input id="documentName" name="documentName" type="file" onchange="sbut1.disabled=false; checkDocumentName(event, documentName.value);" multiple><br>
+        <input id="documentName" name="documentList" type="file" onchange="sbut1.disabled=false; checkDocumentName(event, documentName.value);" multiple><br>
 
         <!-- Send a request with the file information to the server (where the .NET framework is running).
              Note that you must use the POST method here in order to get the relative path right!
