@@ -16,7 +16,7 @@ namespace elsign.Tests
             var httpClientHandler = new HttpClientHandler { Credentials = new NetworkCredential("demo", "Bond007") };
             using (var client = new HttpClient(httpClientHandler))
             {
-                HttpContent content = new ByteArrayContent(File.ReadAllBytes("C:/Users/E214595/Downloads/signicat-onboarding-whitepaper.pdf"));
+                HttpContent content = new ByteArrayContent(File.ReadAllBytes("C:/Users/E214595/Source/Repos/ElectronicSignatures/elsign/wwwroot/data/dummy-document.pdf"));
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
                 HttpResponseMessage response =
                     await client.PostAsync("https://preprod.signicat.com/doc/demo/sds", content);

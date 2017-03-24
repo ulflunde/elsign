@@ -1,6 +1,14 @@
 ﻿using System;
-using Microsoft.Extensions.Caching.Memory;
+using System.IO;
+using System.Collections.Generic;
+using System.Net.Http;
+//using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using System.Threading.Tasks;
+//using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace elsign.Controllers
 {
@@ -9,18 +17,73 @@ namespace elsign.Controllers
         public IUrlHelper h;
 
         private IMemoryCache _cache;
+        private IHostingEnvironment _environment;
 
         public HomeController(IMemoryCache cache)
         {
             _cache = cache;
         }
-
-        public string UploadDocumentToSignicat()
+        public HomeController(IHostingEnvironment environment)
         {
-            string docId = "thisisafakedocumentID";
-            DocumentMetadata.StoreDocumentID(docId, _cache);
-            return docId;
+            _environment = environment;
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SDS(ICollection<IFormFile> documentName)
+        {
+            // first upload the file to our web server
+            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+            foreach (var file in documentName)
+            {
+                if (file.Length > 0)
+                {
+                    using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+                }
+            }
+            return View();
+        }
+        
+        /// <summary>
+        /// Upload the document from the web server to Signicat's document server.
+        /// </summary>
+        /// <param name="selectedDocument"></param>
+        public async void UploadDocumentToSignicat(string selectedDocument)
+        {
+            HttpClientHandler httpClientHandler;
+            HttpResponseMessage response;
+            string docId = null;
+            string username = DocumentMetadata.DEMO_USERNAME;
+            string password = DocumentMetadata.DEMO_PASSWORD;
+
+            /*
+            httpClientHandler = new HttpClientHandler { Credentials = new NetworkCredential(username, password) };
+            using (HttpClient httpClient = new HttpClient(httpClientHandler))
+            {
+                HttpContent httpContent = new ByteArrayContent(System.IO.File.ReadAllBytes(selectedDocument));
+                if (selectedDocument.ToLower().LastIndexOf(".pdf").Equals(selectedDocument.Length - 4))
+                {
+                    httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+                }
+                else
+                {
+                    httpContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+                }
+                response = await httpClient.PostAsync("https://preprod.signicat.com/doc/demo/sds", httpContent);
+                docId = await response.Content.ReadAsStringAsync();
+
+                if (docId.Length > 0 && response.StatusCode.Equals(HttpStatusCode.Created))
+                {
+                    DocumentMetadata.StoreDocumentID(docId, _cache);
+                    ViewData["DocumentID"] = docId;
+                }
+            }
+            */
+
+            return;
+        }  // UploadDocumentToSignicat()
 
         public IActionResult Index()
         {

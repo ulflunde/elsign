@@ -39,17 +39,20 @@ textarea {
 #uploadform {
     padding-top: 1cm;
     padding-bottom: 1cm;
+    width: 100%;
+    background-color: lightgreen;
 }
 
 #downloadform {
     padding-bottom: 1cm;
+    background-color: lightpink;
 }
 
 /* the file name browser textbox */
 #documentName {
     padding-top: 2mm;
-    width: 80%;
-    background-color: lightgreen;
+    width: 95%;
+    background-color: white;
 }
 
 

@@ -66,7 +66,7 @@ namespace elsign
 
                 routes.MapRoute(
                     name: "UploadDocumentToSignicat",
-                    template: "{controller=Home}/{action=UploadDocumentToSignicat}");
+                    template: "{controller=Home}/{action=UploadDocumentToSignicat}/{selectedDocument}");
             });
         }
     }

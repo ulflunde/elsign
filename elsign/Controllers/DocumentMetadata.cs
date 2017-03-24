@@ -9,6 +9,9 @@ namespace elsign.Controllers
 {
     public class DocumentMetadata
     {
+        public const string DEMO_USERNAME = "demo";
+        public const string DEMO_PASSWORD = "Bond007";
+
         private const string KEY_LATEST_DOCUMENT_ID = "latest document ID";
 
         public static string StoreDocumentID(string documentId, IMemoryCache cache)

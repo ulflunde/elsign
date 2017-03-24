@@ -1,14 +1,34 @@
 ﻿<script type="text/javascript">
-    function checkDocumentName(url) {
+    var selectedDoc;
+    function checkDocumentName(e, url) {
         // alert("Full filename: \"" + url + "\"");
+        var files = e.target.files;   // The file(s) selected by the user (as a FileList object).
+        var file = files[0];
+        var lastmodifieddate = file.lastModifiedDate;
+        var relativepath = file.webkitRelativePath;  // this has no value when selecting files, only when selecting folders (i.e., when the input element has a "webkitdirectory" attribute)
+
+        // alert(relativepath);  // relative path, always empty
+        selectedDoc = file.name;
+        alert("The filename is\n" + selectedDoc);  // document name
+        alert("File last modified on\n" + lastmodifieddate);  // timestamp on the form "Fri Mar 03 2017 14:02:24 GMT+0100 (W. Europe Standard Time)"
+        alert(url);  // fakepath path + document name
+        alert("File size: " + file.size);
+        selectedDoc = "wwwroot/data/dummy-document.pdf";
     }
 </script>
 
-<!-- <form id="uploadform" method="post" action="https://preprod.signicat.com/doc/demo/sds"> -->
-<form id="uploadform" method="post" action="/Home/SDS/1">
+<!-- <form id="uploadform" method="post" action="https://preprod.signicat.com/doc/demo/sds"> -->  <!-- this will work, but will pass the control to Signicat's web site -->
+<!-- <form id="uploadform" method="post" action="/Home/SDS/1"> -->
+    <form id="uploadform" method="post" asp-action="SDS" asp-controller="Home" enctype="multipart/form-data">
         Upload a document to the SDS server.
-        <input id="documentName" name="documentName" type="file" onchange="sbut1.disabled=false; checkDocumentName(documentName.value);"><br />
-        <button id="sbut1" disabled runat="server" OnClick='$.get("/Home/UploadDocumentToSignicat", null, function (data) {sbut1.disabled = true;});'>Submit</button>
+
+        <!-- Locate the file containing the document on the client's file system (where the web browser is running). -->
+        <input id="documentName" name="documentName" type="file" onchange="sbut1.disabled=false; checkDocumentName(event, documentName.value);" multiple><br>
+
+        <!-- Send a request with the file information to the server (where the .NET framework is running).
+             Note that you must use the POST method here in order to get the relative path right!
+             If you send a GET request instead, the file must reside in the current working directory on the client. -->
+        <button id="sbut1" disabled runat="server" OnClick='$.post("/Home/UploadDocumentToSignicat", { selectedDocument: selectedDoc }, function (data) { sbut1.disabled = true; });'>Submit</button>
     </form>
 
 <form id="downloadform" method="post" action="/Home/SDS/2">
