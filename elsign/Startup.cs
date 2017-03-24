@@ -65,8 +65,8 @@ namespace elsign
                     template: "{controller=Home}/{action=SDS}/{id:int?}");
 
                 routes.MapRoute(
-                    name: "UploadDocumentToSignicat",
-                    template: "{controller=Home}/{action=UploadDocumentToSignicat}/{selectedDocument}");
+                    name: "store document metadata",
+                    template: "{controller=Home}/{action=StoreDocumentMetadata}/{selectedDocument}");
             });
         }
     }

@@ -15,11 +15,18 @@
     }
     else if (ViewData["Mode"].Equals("upload"))
     {
-        @:<p>Uploaded file "@ViewData["Filename"]".</p>
-        @:<p>The new document ID is: @ViewData["DocumentID"]</p>
+        if (ViewData["errors"].Equals(""))
+        {
+            @:<p>Uploaded file "@ViewData["Filename"]".</p>
+            @:<p>The new document ID is: @ViewData["DocumentID"]</p>
+        }
+        else
+        {
+            @:<script>alert('@ViewData["errors"]')</script>
+        }
     }
-else if (ViewData["Mode"].Equals("download"))
-{
+    else if (ViewData["Mode"].Equals("download"))
+    {
     @:
 <p>Unfinished</p>
     }

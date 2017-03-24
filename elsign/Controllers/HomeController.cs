@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +18,8 @@ namespace elsign.Controllers
 
         protected readonly IMemoryCache _cache;
         protected readonly IHostingEnvironment _environment;
+
+        private string _selectedDocumentOnServer = null;
 
         /*
         /// <summary>
@@ -43,6 +47,70 @@ namespace elsign.Controllers
             this._environment = environment;
         }
 
+        private async Task UploadFileFromClientToServer(ICollection<IFormFile> documentList)
+        {
+            string filename = "";
+            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+
+            foreach (var file in documentList)
+            {
+                if (file.FileName.Length > 0 && file.Length > 0)  // file.Length is the size of the file in bytes
+                {
+                    if (file.Length < 800000)
+                    {
+                        // upload the file to our web server
+                        filename = file.FileName;
+                        _selectedDocumentOnServer = Path.Combine(uploads, filename);
+                        using (var fileStream = new FileStream(_selectedDocumentOnServer, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+                    }
+                    else
+                    {
+                        ViewData["errors"] = "File too big. (" + file.Length.ToString() + " bytes)";
+                    }
+                }
+            }
+
+            DocumentMetadata.StoreFilename(filename, _cache);
+        }
+
+        private async Task UploadFileFromServerToSignicat()
+        {
+            HttpClientHandler httpClientHandler;
+            HttpResponseMessage response;
+            string username = DocumentMetadata.DEMO_USERNAME;
+            string password = DocumentMetadata.DEMO_PASSWORD;
+            string docId = null;  // fetched from Signicat, see below
+
+            httpClientHandler = new HttpClientHandler { Credentials = new NetworkCredential(username, password) };
+            using (HttpClient httpClient = new HttpClient(httpClientHandler))
+            {
+                HttpContent httpContent = new ByteArrayContent(System.IO.File.ReadAllBytes(_selectedDocumentOnServer));
+                if (_selectedDocumentOnServer.ToLower().LastIndexOf(".pdf").Equals(_selectedDocumentOnServer.Length - 4))
+                {
+                    httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+                }
+                else
+                {
+                    httpContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+                }
+                response = await httpClient.PostAsync("https://preprod.signicat.com/doc/demo/sds", httpContent);
+                docId = await response.Content.ReadAsStringAsync();
+
+                if (docId.Length > 0 && response.StatusCode.Equals(HttpStatusCode.Created))
+                {
+                    DocumentMetadata.StoreDocumentID(docId, _cache);
+                    ViewData["DocumentID"] = docId;
+                }
+            }
+
+
+
+            return;
+        }
+
         // Home/SDS with arguments
         [HttpPost]
         public async Task<IActionResult> SDS(ICollection<IFormFile> documentList, int? id)
@@ -50,6 +118,7 @@ namespace elsign.Controllers
             // default action shall be to present the SDS menu
             ViewData["Message"] = "SDS is a service which eliminates large data transfers from your web service requests.";
             ViewData["Mode"] = "menu";
+            ViewData["errors"] = "";
 
             try
             {
@@ -61,23 +130,19 @@ namespace elsign.Controllers
                             ViewData["Message"] = "Upload a file ";
                             ViewData["Mode"] = "upload";
 
-                            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-                            foreach (var file in documentList)
-                            {
-                                if (file.Length > 0)
-                                {
-                                    // upload the file to our web server
-                                    using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
-                                    {
-                                        await file.CopyToAsync(fileStream);
-                                    }
-                                    ViewData["Filename"] = file.FileName;
-                                }
-                            }
-
                             // fetch the file name submitted by the form
-                            // ViewData["Filename"] = Request.Query["documentName"];  // if method="GET"
-                            ViewData["Filename"] = Request.Form["documentName"];  // if method="POST"
+
+                            // 1. using form with action (not asp-action) and method="GET"
+                            // DocumentMetadata.StoreFilename(Request.Query["documentList"]);
+
+                            // 2. using form with action (not asp-action) and method="POST"
+                            // DocumentMetadata.StoreFilename(Request.Form["documentList"]);
+
+                            // 3. using form with asp-action (not action) and method="POST"
+                            await UploadFileFromClientToServer(documentList);
+                            await UploadFileFromServerToSignicat();
+
+                            ViewData["Filename"] = DocumentMetadata.GetLastFilename(_cache);
                             ViewData["DocumentID"] = DocumentMetadata.GetLastDocumentID(_cache);
                             break;
                         case 2:  // present files which may be available for download
@@ -101,40 +166,11 @@ namespace elsign.Controllers
         /// Upload the document from the web server to Signicat's document server.
         /// </summary>
         /// <param name="selectedDocument"></param>
-        public async void UploadDocumentToSignicat(string selectedDocument)
+        public void StoreDocumentMetadata(string selectedDocument)
         {
-            HttpClientHandler httpClientHandler;
-            HttpResponseMessage response;
-            string docId = null;
-            string username = DocumentMetadata.DEMO_USERNAME;
-            string password = DocumentMetadata.DEMO_PASSWORD;
-
-            /*
-            httpClientHandler = new HttpClientHandler { Credentials = new NetworkCredential(username, password) };
-            using (HttpClient httpClient = new HttpClient(httpClientHandler))
-            {
-                HttpContent httpContent = new ByteArrayContent(System.IO.File.ReadAllBytes(selectedDocument));
-                if (selectedDocument.ToLower().LastIndexOf(".pdf").Equals(selectedDocument.Length - 4))
-                {
-                    httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
-                }
-                else
-                {
-                    httpContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
-                }
-                response = await httpClient.PostAsync("https://preprod.signicat.com/doc/demo/sds", httpContent);
-                docId = await response.Content.ReadAsStringAsync();
-
-                if (docId.Length > 0 && response.StatusCode.Equals(HttpStatusCode.Created))
-                {
-                    DocumentMetadata.StoreDocumentID(docId, _cache);
-                    ViewData["DocumentID"] = docId;
-                }
-            }
-            */
-
+            string copy = selectedDocument;
             return;
-        }  // UploadDocumentToSignicat()
+        }  // 
 
         public IActionResult Index()
         {
