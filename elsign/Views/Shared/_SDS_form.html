@@ -29,21 +29,42 @@
 
 
 <script type="text/javascript">
+    // global variables
     var selectedDocumentOnClient;
+    var sizeOfSelectedFile;
+
     function checkDocumentName(e, url) {
         var files = e.target.files;   // The file(s) selected by the user (as a FileList object).
         var file = files[0];
         var lastmodifieddate = file.lastModifiedDate;
         var relativepath = file.webkitRelativePath;  // this has no value when selecting files, only when selecting folders (i.e., when the input element has a "webkitdirectory" attribute)
+        var LARGE_FILE_SIZE = 800000;  // give a warning if the file size is > 800 KB
+        var MAX_FILE_SIZE = 6000000;  // cancel the upload if the file size is > 6 MB
 
         // alert(relativepath);  // relative path, always empty
         // alert(url);  // fakepath path + document name
         // alert("The filename is\n" + file.name);  // document name
         // alert("File last modified on\n" + lastmodifieddate);  // timestamp on the form "Fri Mar 03 2017 14:02:24 GMT+0100 (W. Europe Standard Time)"
-        if (file.size > 800000) {
+        if (file.size > MAX_FILE_SIZE) {
+            alert("Selected file is too big: " + file.size);
+            sbut1.disabled = true;
+            documentName.value = "";
+        }
+        else if (file.size > LARGE_FILE_SIZE) {
             alert("Warning: File size is " + file.size);
+            sizeOfSelectedFile = file.size;
+        }
+        else
+        {
+            sizeOfSelectedFile = LARGE_FILE_SIZE - 1;
         }
         selectedDocumentOnClient = "wwwroot/data/" + file.name;  // store the (client file system) filename in a global variable
+    }
+
+    function prepareForUpload(data) {
+        alert("prepareForUpload()");
+        alert("sizeOfSelectedFile = " + sizeOfSelectedFile);
+        sbut1.disabled = true;
     }
 </script>
 

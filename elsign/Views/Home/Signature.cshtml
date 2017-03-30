@@ -2,7 +2,19 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Sign a Document";
+    ViewData["Title"] = "Secure, digital signature";
 }
 <h2>@ViewData["Title"].</h2>
 <h3>@ViewData["Message"]</h3>
+
+<div class="centered_text">
+    @if (ViewData["Filelist"] != null)
+    {
+        string[] filelist = (string[])ViewData["Filelist"];
+        foreach (string name in filelist)
+        {
+            @:<br /><input type="radio" name="file" value="lastfile" onchange="document.getElementById('signbutton').disabled = false;"> @name
+        }
+        @:<br /><button id="signbutton" disabled>Sign document</button>
+    }
+</div>

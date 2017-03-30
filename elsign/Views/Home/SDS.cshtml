@@ -38,7 +38,7 @@
         {
             foreach (string name in filelist)
             {
-               @:<input type="radio" name="file" value="lastfile" onchange="document.getElementById('downloadbutton').disabled = false;"> @name
+                @:<br /><input type="radio" name="file" value="lastfile" onchange="document.getElementById('downloadbutton').disabled = false;"> @name
             }
             @:<br /><button id="downloadbutton" disabled>Start download</button>
         }

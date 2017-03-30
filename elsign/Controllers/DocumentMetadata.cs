@@ -21,6 +21,7 @@ namespace elsign.Controllers
             public int filesize;
             public string filename;
             public string signicatDocumentId;
+            public bool signed;
 
             /// <summary>
             /// Constructor (quick initializer).
@@ -33,6 +34,7 @@ namespace elsign.Controllers
                 filesize = size;
                 filename = name;
                 signicatDocumentId = id;
+                signed = false;
             }
         }  // class DocMetaData
 
@@ -111,6 +113,12 @@ namespace elsign.Controllers
                 {
                     filelist[i] = documentList[i].filename;
                     idlist[i] = documentList[i].signicatDocumentId;
+                    filelist[i] += " (";
+                    if (!documentList[i].signed)
+                    {
+                        filelist[i] += "un";
+                    }
+                    filelist[i] += "signed)";
                 }
             }
 

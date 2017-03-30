@@ -58,7 +58,7 @@ namespace elsign
 
                 routes.MapRoute(
                     name: "template",
-                    template: "{controller=Home}/{action=LearnAspNet}");
+                    template: "{controller=Home}/{action=LearnAspNet}");  // the Index page from the .NET Core tutorial, moved to a subpage
 
                 routes.MapRoute(
                     name: "session data storage service",
@@ -67,6 +67,10 @@ namespace elsign
                 routes.MapRoute(
                     name: "store document metadata",
                     template: "{controller=Home}/{action=StoreDocumentMetadata}/{selectedDocument}");
+
+                routes.MapRoute(
+                    name: "sign a document",
+                    template: "{controller=Home}/{action=Signature}/{selectedDocument}");
             });
         }
     }
