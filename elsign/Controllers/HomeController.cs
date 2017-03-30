@@ -41,11 +41,13 @@ namespace elsign.Controllers
         }
         */
 
+
         public HomeController(IMemoryCache cache, IHostingEnvironment environment)
         {
             this._cache = cache;
             this._environment = environment;
         }
+
 
         private async Task UploadFileFromClientToServer(ICollection<IFormFile> documentList)
         {
@@ -70,11 +72,15 @@ namespace elsign.Controllers
                     {
                         ViewData["errors"] = "File too big. (" + file.Length.ToString() + " bytes)";
                     }
+                    ViewData["Filesize"] = Convert.ToInt32(file.Length);
                 }
             }
 
             DocumentMetadata.StoreFilename(filename, _cache);
-        }
+
+            return;
+        }  // UploadFileFromClientToServer()
+
 
         private async Task UploadFileFromServerToSignicat()
         {
@@ -106,15 +112,16 @@ namespace elsign.Controllers
                 }
             }
 
-
-
             return;
-        }
+        }  // UploadFileFromServerToSignicat()
+
 
         // Home/SDS with arguments
         [HttpPost]
         public async Task<IActionResult> SDS(ICollection<IFormFile> documentList, int? id)
         {
+            string[] filelist;
+
             // default action shall be to present the SDS menu
             ViewData["Message"] = "SDS is a service which eliminates large data transfers from your web service requests.";
             ViewData["Mode"] = "menu";
@@ -139,15 +146,24 @@ namespace elsign.Controllers
                             // DocumentMetadata.StoreFilename(Request.Form["documentList"]);
 
                             // 3. using form with asp-action (not action) and method="POST"
-                            await UploadFileFromClientToServer(documentList);
+                            await UploadFileFromClientToServer(documentList);  // also sets ViewData["filesize"]
                             await UploadFileFromServerToSignicat();
 
                             ViewData["Filename"] = DocumentMetadata.GetLastFilename(_cache);
                             ViewData["DocumentID"] = DocumentMetadata.GetLastDocumentID(_cache);
+                            if (ViewData["Filename"] != null && ViewData["Filesize"] != null && ViewData["DocumentID"] != null)
+                            {
+                                DocumentMetadata.AddToStoredDocuments(_cache, (string) ViewData["Filename"], (int) ViewData["Filesize"], (string) ViewData["DocumentID"]);
+                            }
                             break;
                         case 2:  // present files which may be available for download
-                            ViewData["Message"] = "Downloading file ";
+                            ViewData["Message"] = "Please choose a file for download:";
                             ViewData["Mode"] = "download";
+                            ViewData["Filelist"] = DocumentMetadata.GetDocumentlist(_cache);
+                            if ((string[]) ViewData["Filelist"] == null)
+                            {
+                                ViewData["Message"] = "No files have been uploaded.";
+                            }
                             break;
                         default:
                             break;
@@ -161,6 +177,7 @@ namespace elsign.Controllers
 
             return View();
         }  // Action SDS with parameters
+
 
         /// <summary>
         /// Upload the document from the web server to Signicat's document server.
@@ -215,7 +232,7 @@ namespace elsign.Controllers
         // Home/SDS without arguments
         public IActionResult SDS()
         {
-            // default action shall be to present the SDS menu
+            // default action for the SDS menu choice (if no subpage is specified) shall be to present the SDS menu
             ViewData["Message"] = "SDS is a service which eliminates large data transfers from your web service requests.";
             ViewData["Mode"] = "menu";
 

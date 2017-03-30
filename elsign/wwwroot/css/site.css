@@ -44,6 +44,7 @@ textarea {
 }
 
 #downloadform {
+    padding-top: 1cm;
     padding-bottom: 1cm;
     background-color: lightpink;
 }
@@ -55,6 +56,12 @@ textarea {
     background-color: white;
 }
 
+#downloadbutton {
+    margin-top: 5mm;
+}
 
+footer {
+    padding-top: 1cm;
+}
 
 

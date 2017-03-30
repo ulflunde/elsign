@@ -20,8 +20,8 @@
     </form>
 
 <form id="downloadform" method="post" action="/Home/SDS/2">
-    Download a document from the SDS server.<br />
-    <button id="sbut2" enabled>Choose file</button>
+    Fetch a document from the SDS server.<br />
+    <br><button id="sbut2" enabled>Show filelist</button>
 </form>
 
 
@@ -41,7 +41,7 @@
         // alert("The filename is\n" + file.name);  // document name
         // alert("File last modified on\n" + lastmodifieddate);  // timestamp on the form "Fri Mar 03 2017 14:02:24 GMT+0100 (W. Europe Standard Time)"
         if (file.size > 800000) {
-            alert("File size: " + file.size);
+            alert("Warning: File size is " + file.size);
         }
         selectedDocumentOnClient = "wwwroot/data/" + file.name;  // store the (client file system) filename in a global variable
     }

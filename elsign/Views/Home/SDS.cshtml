@@ -15,20 +15,33 @@
     }
     else if (ViewData["Mode"].Equals("upload"))
     {
-        if (ViewData["errors"].Equals(""))
+        if (String.IsNullOrEmpty((string) ViewData["errors"]))
         {
-            @:<p>Uploaded file "@ViewData["Filename"]".</p>
-            @:<p>The new document ID is: @ViewData["DocumentID"]</p>
+            if (!String.IsNullOrEmpty((string) ViewData["Filename"]))
+            {
+                @:<p>Uploaded file "@ViewData["Filename"]".</p>
+            }
+            if (!String.IsNullOrEmpty((string) ViewData["DocumentID"]))
+            {
+                @:<p>The new document's ID is: @ViewData["DocumentID"]</p>
+            }
         }
         else
         {
-            @:<script>alert('@ViewData["errors"]')</script>
+            @:<script>alert('@ViewData["errors"]');</script>
         }
     }
     else if (ViewData["Mode"].Equals("download"))
     {
-    @:
-<p>Unfinished</p>
+        string[] filelist = (string[]) ViewData["Filelist"];
+        if (filelist != null)
+        {
+            foreach (string name in filelist)
+            {
+               @:<input type="radio" name="file" value="lastfile" onchange="document.getElementById('downloadbutton').disabled = false;"> @name
+            }
+            @:<br /><button id="downloadbutton" disabled>Start download</button>
+        }
     }
 </div>
 
