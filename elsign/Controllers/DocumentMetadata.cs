@@ -9,9 +9,6 @@ namespace elsign.Controllers
 {
     public class DocumentMetadata
     {
-        public const string DEMO_USERNAME = "demo";
-        public const string DEMO_PASSWORD = "Bond007";
-
         private const string KEY_DOCUMENTLIST = "document list";
         private const string KEY_LATEST_DOCUMENT_ID = "latest document ID";
         private const string KEY_LATEST_FILENAME = "latest filename";

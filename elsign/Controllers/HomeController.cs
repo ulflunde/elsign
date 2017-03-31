@@ -100,8 +100,8 @@ namespace elsign.Controllers
         {
             HttpClientHandler httpClientHandler;
             HttpResponseMessage response;
-            string username = DocumentMetadata.DEMO_USERNAME;
-            string password = DocumentMetadata.DEMO_PASSWORD;
+            string username = DocumentService.DEMO_USERNAME;
+            string password = DocumentService.DEMO_PASSWORD;
             string docId = null;  // fetched from Signicat, see below
 
             httpClientHandler = new HttpClientHandler { Credentials = new NetworkCredential(username, password) };
