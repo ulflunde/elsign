@@ -27,11 +27,16 @@ using Signicat.Basic.SignatureOrder;
 using Signicat.Basic.Validation;
 using Signicat.Basic.Viewer;
 using Signicat.Basic;
+using elsign.Controllers.XML;
 
 namespace elsign.Controllers
 {
     public class DocumentService
     {
+        // Ran C:\Program Files(x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\x64\wsdl.exe
+        // on the WSDL XML file mentioned on the Signicat Support site
+        // to generate the class XML/DocumentService.cs.
+
         public const string DEMO_USERNAME = "demo";
         public const string DEMO_PASSWORD = "Bond007";
 
@@ -127,6 +132,7 @@ namespace elsign.Controllers
             Assert.IsNull(response.artifact);
             Assert.IsNotNull(response.requestid);
             */
+
             return;
         }
 

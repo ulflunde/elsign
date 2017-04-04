@@ -6,6 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Signicat.Basic;  // 1.12.16.0
+using Signicat.Basic.Archive;
+using Signicat.Basic.Authentication;
+using Signicat.Basic.DocumentAction;
+using Signicat.Basic.DocumentActionService;
 
 namespace elsign.Tests
 {
@@ -17,9 +22,10 @@ namespace elsign.Tests
     {
         public ElectronicSignature_UnitTest()
         {
-            //
-            // TODO: Add constructor logic here
-            //
+            Signicat.Basic.ObjectModel.Environments signicat_objectmodel_environment = new Signicat.Basic.ObjectModel.Environments();
+            Signicat.Basic.Authentication.AuthenticationProvider signicat_authentication_provider = new Signicat.Basic.Authentication.AuthenticationProvider(signicat_objectmodel_environment);
+            Signicat.Basic.DocumentAction.Document document;  // abstract class
+            Signicat.Basic.Archive.Document archive_document;  // abstract class
         }
 
         private TestContext testContextInstance;
@@ -155,7 +161,7 @@ namespace elsign.Tests
         // the complete PAdES is available
         // for download from the Session Data Storage.
         [TestMethod]
-        public async Task How_to_download_a_document_from_SDS()
+        public async System.Threading.Tasks.Task How_to_download_a_document_from_SDS()
         {
             string padesDocumentId = "300820131anomvdrt18vhkajyo1n00891l21i449i7tt5n2fqu911bkmh4";
             var httpClientHandler = new HttpClientHandler { Credentials = new NetworkCredential("demo", "Bond007") };
